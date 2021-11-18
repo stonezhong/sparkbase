@@ -1,21 +1,21 @@
+import typing
 import os
 import json
 from datetime import timedelta
 from uuid import UUID
 import urllib.parse
 import jinja2
-from django.http import HttpResponseForbidden, Http404
+from django.http import HttpRequest, HttpResponse, HttpResponseForbidden, Http404
 from django.contrib.auth.models import User
 from django.db import transaction
 from main.models import AccessToken
-from utils import send_email
+from utils import send_email, get_config_json
 from ui.view_tools import render_application, render_application_error
-from django.conf import settings
 
-APP_CONFIG = settings.APP_CONFIG
+
 
 @transaction.atomic
-def signup(request):
+def signup(request:HttpRequest)->HttpResponse:
     if request.method == 'GET':
         if request.user.is_authenticated:
             return render_application_error(
@@ -147,7 +147,7 @@ def signup(request):
             )
 
 
-def find_user(username):
+def find_user(username:str)->typing.Optional[User]:
     users = User.objects.filter(username=username)
     if len(users) == 0:
         return None
@@ -156,8 +156,9 @@ def find_user(username):
 
 
 
-def send_signup_validate_email(*, email, username, token_id):
-    base_url = APP_CONFIG['base_url']
+def send_signup_validate_email(*, email:str, username:str, token_id:UUID)->None:
+    app_config = get_config_json("config.json")
+    base_url = app_config['base_url']
     url = os.path.join(base_url, "ui", "signup-validate") + "?" + urllib.parse.urlencode({
         'username': username,
         'token': str(token_id),
@@ -197,7 +198,7 @@ def send_signup_validate_email(*, email, username, token_id):
     )
 
 @transaction.atomic
-def signup_validate(request):
+def signup_validate(request:HttpRequest)->HttpResponse:
     if request.method != 'GET':
         return HttpResponseForbidden()
     

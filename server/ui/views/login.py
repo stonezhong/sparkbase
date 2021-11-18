@@ -1,9 +1,9 @@
-from django.http import  HttpResponseRedirect, HttpResponseForbidden
+from django.http import HttpRequest, HttpResponse, HttpResponseRedirect, HttpResponseForbidden
 import django.contrib.auth as auth
 from django.urls import reverse
 from ui.view_tools import render_application
 
-def login(request):
+def login(request:HttpRequest)->HttpResponse:
     if request.method == 'GET':
         if request.user.is_authenticated:
             return HttpResponseRedirect(reverse('home'))
