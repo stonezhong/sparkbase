@@ -1,0 +1,12 @@
+{
+    "enable_js_debug": true,
+    "secret_key": "django-insecure-@8i&eu34s+3fkrq%yrs7io^@d2$81db$+xnoupnlo=#oyma#gv",
+    "smtp": {
+        "login": "dmmonitor555@gmail.com",
+        "password": "WNkn9BvQA9CMRxH5",
+        "smtp_server": "smtp.gmail.com",
+        "smtp_port": 587,
+        "sender": "DM Admin <dmmonitor555@gmail.com>"
+    },
+    "base_url": "http://localhost:8080/"
+}

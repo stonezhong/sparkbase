@@ -1,0 +1,77 @@
+{% load app_filters %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewpoint" content="with=device, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>SparkBase - {{ sub_title }}</title>
+    <link rel="shortcut icon" href="/static/images/logo.png">
+
+    {% if ENV_enable_js_debug %}
+        <link rel="stylesheet" href="https://unpkg.com/bootstrap@4.6.0/dist/css/bootstrap.css">
+        <link rel="stylesheet" href="https://unpkg.com/react-bootstrap-table-next@4.0.3/dist/react-bootstrap-table2.css">
+        <link rel="stylesheet" href="https://unpkg.com/react-bootstrap-table2-paginator@2.1.2/dist/react-bootstrap-table2-paginator.css">
+    {% else %}
+        <link rel="stylesheet" href="https://unpkg.com/bootstrap@4.6.0/dist/css/bootstrap.min.css">
+        <link rel="stylesheet" href="https://unpkg.com/react-bootstrap-table-next@4.0.3/dist/react-bootstrap-table2.min.css">
+        <link rel="stylesheet" href="https://unpkg.com/react-bootstrap-table2-paginator@2.1.2/dist/react-bootstrap-table2-paginator.min.css">
+    {% endif %}
+
+    <link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/redmond/jquery-ui.css">
+
+    {% if ENV_enable_js_debug %}
+        <script src="https://unpkg.com/lodash@4.17.20/lodash.js"></script>
+        <script src="https://unpkg.com/jquery@3.1.0/dist/jquery.js"></script>
+        <script src="https://unpkg.com/react@16.14.0/umd/react.development.js"></script>
+        <script src="https://unpkg.com/react-dom@16.14.0/umd/react-dom.development.js"></script>
+        <script src="https://unpkg.com/react-bootstrap@1.6.1/dist/react-bootstrap.js"></script>
+        <script src="https://unpkg.com/react-bootstrap-table-next@4.0.3/dist/react-bootstrap-table-next.js"></script>
+        <script src="https://unpkg.com/react-bootstrap-table2-filter@1.3.3/dist/react-bootstrap-table2-filter.js"></script>
+        <script src="https://unpkg.com/react-bootstrap-table2-paginator@2.1.2/dist/react-bootstrap-table2-paginator.js"></script>
+        <script src="https://cdn.ckeditor.com/ckeditor5/23.1.0/classic/ckeditor.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/@ckeditor/ckeditor5-react@3.0.2/dist/ckeditor.js"></script>
+        <script
+            src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"
+            integrity="sha256-T0Vest3yCU7pafRw9r+settMBX6JkKN06dqBnpQ8d30="
+            crossorigin="anonymous">
+        </script>
+    {% else %}
+        <script src="https://unpkg.com/lodash@4.17.20/lodash.min.js"></script>
+        <script src="https://unpkg.com/jquery@3.1.0/dist/jquery.min.js"></script>
+        <script src="https://unpkg.com/react@16.14.0/umd/react.production.min.js"></script>
+        <script src="https://unpkg.com/react-dom@16.14.0/umd/react-dom.production.min.js"></script>
+        <script src="https://unpkg.com/react-bootstrap@1.6.1/dist/react-bootstrap.min.js"></script>
+        <script src="https://unpkg.com/react-bootstrap-table-next@4.0.3/dist/react-bootstrap-table-next.min.js"></script>
+        <script src="https://unpkg.com/react-bootstrap-table2-filter@1.3.3/dist/react-bootstrap-table2-filter.min.js"></script>
+        <script src="https://unpkg.com/react-bootstrap-table2-paginator@2.1.2/dist/react-bootstrap-table2-paginator.min.js"></script>
+        <script src="https://cdn.ckeditor.com/ckeditor5/23.1.0/classic/ckeditor.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/@ckeditor/ckeditor5-react@3.0.2/dist/ckeditor.min.js"></script>
+        <script
+            src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"
+            integrity="sha256-VazP97ZCwtekAsvgPBSUwPFKdrwD3unUfSGVYrahUqU="
+            crossorigin="anonymous">
+        </script>
+    {% endif %}
+
+
+    <meta name="csrf" content="{{ csrf_token }}">
+    <meta name="user" content="{{user|user_to_json}}">
+    {% if app_context %}
+    <meta name="app_context" content="{{ app_context }}">
+    {% endif %}
+    {% if init_menu_key %}
+    <meta name="init_menu_key" content="{{ init_menu_key }}">
+    {% endif %}
+
+    {% for script in scripts %}
+    <script src="{{ script }}"></script>
+    {% endfor %}
+</head>
+
+<body>
+    <div id="global-header"></div>
+    <div id='app'></div>
+</body>
+</html>
