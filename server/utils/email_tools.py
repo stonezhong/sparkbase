@@ -1,12 +1,12 @@
+from typing import List
 import smtplib
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 
 from .config import get_config_json
 
-def send_email(recipients, subject, text_content, html_content):
-    APP_CONFIG = get_config_json("config.json")
-    smtp_cfg = APP_CONFIG['smtp']
+def send_email(recipients: List[str], subject:str, text_content:str, html_content:str):
+    smtp_cfg = get_config_json("config.json")['smtp']
 
     msg = MIMEMultipart("alternative")
     msg['Subject'] = subject
