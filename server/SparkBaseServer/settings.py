@@ -10,6 +10,8 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/3.2/ref/settings/
 """
 
+# For google auth, see https://django-allauth.readthedocs.io/en/latest/installation.html
+
 from pathlib import Path
 from utils import get_config_json
 
@@ -37,6 +39,14 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+
+    # for allauth
+    'django.contrib.sites',
+    'allauth',
+    'allauth.account',
+    'allauth.socialaccount',
+    'allauth.socialaccount.providers.google',
+
     'main.apps.MainConfig',
     'ui.apps.UiConfig',
 ]
@@ -50,6 +60,44 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
+
+# Support both local authentication and oauth authentication
+AUTHENTICATION_BACKENDS = [
+    'django.contrib.auth.backends.ModelBackend',
+    'allauth.account.auth_backends.AuthenticationBackend'
+]
+
+# You can download this json from google developer's console
+GOOGLE_CLIENT_SECRET = get_config_json("google-client-secret.json")
+SOCIALACCOUNT_PROVIDERS = {
+    'google': {
+        'APP': {
+            'client_id':    GOOGLE_CLIENT_SECRET['web']['client_id'],
+            'secret':       GOOGLE_CLIENT_SECRET['web']['client_secret'],
+        },
+        'SCOPE': [
+            'profile',
+            'email',
+            'openid'
+        ],
+        'AUTH_PARAMS': {
+            'access_type': 'online',
+        }
+    }
+}
+# by default, when google user login, their username is the firstname
+# we want username changed to email
+SOCIALACCOUNT_ADAPTER = "utils.google_account_adapter.GoogleAccountAdapter"
+
+# This must be a valid site it, go to https://<your-site>/admin/ to check
+# for all sites
+SITE_ID = 3
+
+# without this, the google oauth's callback wont be https
+ACCOUNT_DEFAULT_HTTP_PROTOCOL='https'
+LOGIN_REDIRECT_URL = '/'        # redirect after login
+LOGOUT_REDIRECT_URL = '/'       # redirect after logout
+ACCOUNT_LOGOUT_ON_GET = True    # We can use http get to signout
 
 ROOT_URLCONF = 'SparkBaseServer.urls'
 
@@ -65,6 +113,8 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                # required by 'allauth'
+                'django.template.context_processors.request',
             ],
         },
     },

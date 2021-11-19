@@ -7,12 +7,30 @@ def login(request:HttpRequest)->HttpResponse:
     if request.method == 'GET':
         if request.user.is_authenticated:
             return HttpResponseRedirect(reverse('home'))
+
+        auth_method = request.GET.get("auth", 'gmail')
+        if auth_method == 'pwd':
+            return render_application(
+                request, 
+                scripts = ['/static/js-bundle/login.js'], 
+                sub_title='Login',
+                init_menu_key="login"
+            )
+
+        if auth_method == 'gmail':
+            return HttpResponseRedirect('/accounts/google/login/?process=login')
+
         return render_application(
             request, 
-            scripts = ['/static/js-bundle/login.js'], 
-            sub_title='Login',
-            init_menu_key="login"
+            scripts = ['/static/js-bundle/error.js'], 
+            sub_title='Error',
+            app_context={
+                "subject": 403,
+                "message": "Forbidden"
+            },
+            status=403
         )
+
 
     if request.method == 'POST':
         if request.user.is_authenticated:

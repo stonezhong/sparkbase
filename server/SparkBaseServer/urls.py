@@ -21,4 +21,6 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('ui/', include('ui.urls')),
     path('', lambda request: redirect('ui/home', permanent=False)),
+    # Turn this one if you want to debug
+    path('accounts/', include('allauth.urls')),
 ]

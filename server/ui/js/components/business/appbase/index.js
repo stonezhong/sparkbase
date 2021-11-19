@@ -45,13 +45,13 @@ class GlobalHeader extends React.Component {
                         href="/ui/login"
                     >Login</Nav.Link>
                 }
-                { 
+                {/* { 
                     !this.props.current_user.is_authenticated && 
                     <Nav.Link 
                         eventKey="signup" 
                         href="/ui/signup"
                     >Signup</Nav.Link>
-                }
+                } */}
             </Nav>
             {
                 this.props.current_user.is_authenticated &&
@@ -61,7 +61,7 @@ class GlobalHeader extends React.Component {
                     menuAlign="right"
                     variant="light"
                 >
-                    <Dropdown.Item href="/ui/logout">Logout</Dropdown.Item>
+                    <Dropdown.Item href="/accounts/logout">Logout</Dropdown.Item>
                 </DropdownButton>
             }
         </Navbar>;
