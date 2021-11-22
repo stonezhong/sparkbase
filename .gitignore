@@ -8,3 +8,5 @@ server/node_modules/
 # do not check in js bundles, since they are generated
 server/ui/static/js-bundle/
 
+# do not check in vscode config
+.vscode/
