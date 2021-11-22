@@ -47,6 +47,10 @@ INSTALLED_APPS = [
     'allauth.socialaccount',
     'allauth.socialaccount.providers.google',
 
+    # for REST Framework
+    'rest_framework',
+    'django_filters',
+
     'main.apps.MainConfig',
     'ui.apps.UiConfig',
 ]
@@ -188,3 +192,19 @@ def ui_environment(request):
     return {
         "ENV_enable_js_debug": APP_CONFIG['enable_js_debug']
     }
+
+REST_FRAMEWORK = {
+    # Use Django's standard `django.contrib.auth` permissions,
+    # or allow read-only access for unauthenticated users.
+    'DEFAULT_PERMISSION_CLASSES': [
+        'rest_framework.permissions.DjangoModelPermissionsOrAnonReadOnly',
+    ],
+    'DEFAULT_FILTER_BACKENDS': ['django_filters.rest_framework.DjangoFilterBackend'],
+    # 'DATETIME_FORMAT': '%Y-%m-%d %H:%M:%S',
+    # 'DATETIME_INPUT_FORMATS': ['%Y-%m-%d %H:%M:%S'],
+    'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.LimitOffsetPagination',
+    'PAGE_SIZE': 20
+}
+
+SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO','https')
+
