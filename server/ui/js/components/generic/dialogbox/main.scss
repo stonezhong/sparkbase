@@ -1,0 +1,48 @@
+div.standard-modal {
+    max-width: none !important;
+    max-height: none !important;
+    margin-top: 0 !important;
+    margin-bottom: 0 !important;
+
+    & > div.modal-content {
+        & > div.modal-header {
+            background-color: royalblue;
+            cursor: move;
+            padding: 6px;
+
+            & > div.modal-title {
+                color: white;
+                font-weight: bold;
+                font-size: 18px;
+            }
+
+            & > button.close {
+                cursor: default;
+            }
+        }
+
+        & > div.modal-body {
+            background-color: #fafafa;
+        }
+
+        border: 1px solid darkgrey;
+    }
+}
+div.lg-modal {
+    & > div.modal-content {
+        width:  1440px;
+        height: 860px;
+    }
+}
+div.md-modal {
+    & > div.modal-content {
+        width:  1080px;
+        height: 600px;
+    }
+}
+div.sm-modal {
+    & > div.modal-content {
+        width:  800px;
+        height: 600px;
+    }
+}

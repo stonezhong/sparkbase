@@ -29,3 +29,15 @@ export class ApplicationPage {
             return "";
     }
 }
+
+export function bless_modal(modal_id) {
+    const modal_content = $(`[data-modal-id=${modal_id}] > .modal-content`);
+ 
+    modal_content.resizable({});
+    modal_content.draggable({
+        handle: ".modal-header",
+    });
+    modal_content.position({
+        of: $(window)
+    });
+}
