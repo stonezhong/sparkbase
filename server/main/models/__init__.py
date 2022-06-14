@@ -1,2 +1,2 @@
-from .access_token import AccessToken
-from .datalake import DataLake, PermissionName, Permission, PermissionGrant
+from .datalake import DataLake, DataLakeAdmin, DataLakeUserPermission, DataLakeGroupPermission
+from .spark_connector import SparkConnector
