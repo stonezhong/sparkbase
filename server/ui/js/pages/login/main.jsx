@@ -45,13 +45,13 @@ class LoginApplicationPage extends React.Component {
                         name="csrfmiddlewaretoken"
                         value={this.props.csrf_token}
                     />
-                    <Form.Group as={Row} controlId="username">
+                    <Form.Group as={Row} controlId="username" className="mb-1">
                         <Form.Label column sm={3}>Username</Form.Label>
                         <Col>
                             <Form.Control name="username" />
                         </Col>
                     </Form.Group>
-                    <Form.Group as={Row} controlId="password">
+                    <Form.Group as={Row} controlId="password" className="mb-1">
                         <Form.Label column sm={3}>Password</Form.Label>
                         <Col>
                             <Form.Control type="password" name="password" />

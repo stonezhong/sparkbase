@@ -1,76 +1,76 @@
-from enum import Enum
+from datetime import datetime
 from django.db import models
-from django.contrib.auth.models import User
-
-class PermissionName(Enum):
-    # a user has subscribed a dakalake
-    SUBSCRIBE   = ("subscribe", "Subscribe")
-
-    # such user can add user to datalake
-    # remove user from datalake
-    # change user permission to datalake
-    USER_MANAGER  = ("user_manager", "User Manager")
-
+from django.contrib.auth.models import User, Group, Permission
 
 class DataLake(models.Model):
     id                  = models.BigAutoField(primary_key=True)
     name                = models.CharField(null=False, max_length=255, blank=False, unique=True)
     description         = models.TextField(null=False, blank=True)
     config              = models.TextField(null=False, blank=True)
+    created_by          = models.ForeignKey(User, on_delete=models.PROTECT, null=False)
+    created_at          = models.DateTimeField()
     is_active           = models.BooleanField(null=False)
 
     @classmethod
     def create(cls, created_by:User, name:str, description:str, config:str):
-        datalake = DataLake(name=name, description=description,config=config,is_active=True)
+        """
+        Create a datalake
+        """
+        datalake = DataLake(
+            name=name,
+            description=description,
+            config=config,
+            created_by=created_by,
+            created_at=datetime.utcnow(),
+            is_active=True,
+        )
         datalake.save()
 
-        subscribe_permission = Permission(
-            datalake=datalake, 
-            name=PermissionName.SUBSCRIBE.value[0],
-            display_name=PermissionName.SUBSCRIBE.value[1],
+        datalake_admin = DataLakeAdmin(
+            datalake = datalake,
+            user = created_by
         )
-        subscribe_permission.save()
-
-        user_manager_permission = Permission(
-            datalake=datalake, 
-            name=PermissionName.USER_MANAGER.value[0],
-            display_name=PermissionName.USER_MANAGER.value[1],
-        )
-        user_manager_permission.save()
-
-        permission_grant = PermissionGrant(user=created_by, datalake=datalake, permission=subscribe_permission)
-        permission_grant.save()
-        permission_grant = PermissionGrant(user=created_by, datalake=datalake, permission=user_manager_permission)
-        permission_grant.save()
+        datalake_admin.save()
 
         return datalake
 
 
+# Note: in django, there is no nested groups, group can only contain users
 
-class Permission(models.Model):
+class DataLakeAdmin(models.Model):
     id                  = models.BigAutoField(primary_key=True)
     datalake            = models.ForeignKey(DataLake, on_delete=models.PROTECT, null=False)
-    name                = models.CharField(null=False, max_length=255, blank=False)
-    display_name        = models.CharField(null=False, max_length=255, blank=False)
+    user                = models.ForeignKey(User, on_delete=models.PROTECT, null=False, related_name='admins')
 
     class Meta:
         unique_together = [
-            ['datalake', 'name']
+            ['datalake', 'user']
         ]
-    
 
-
-class PermissionGrant(models.Model):
-    """Represent a user has permission to a object with target_id in a datakale.
-    If target_id is null, then the permission is not target specific
-    """
+class DataLakeUserPermission(models.Model):
+    #########################################################
+    # This model represent a user has a permission within a datalake
+    #########################################################
     id                  = models.BigAutoField(primary_key=True)
-    user                = models.ForeignKey(User, on_delete=models.PROTECT, null=False)
     datalake            = models.ForeignKey(DataLake, on_delete=models.PROTECT, null=False)
+    user                = models.ForeignKey(User, on_delete=models.PROTECT, null=False)
     permission          = models.ForeignKey(Permission, on_delete=models.PROTECT, null=False)
-    target_id           = models.BigIntegerField(null=True)
 
     class Meta:
         unique_together = [
-            ['user', 'datalake', 'permission', 'target_id']
+            ['datalake', 'user', 'permission']
+        ]
+
+class DataLakeGroupPermission(models.Model):
+    #########################################################
+    # This model represent a group has a permission within a datalake
+    #########################################################
+    id                  = models.BigAutoField(primary_key=True)
+    datalake            = models.ForeignKey(DataLake, on_delete=models.PROTECT, null=False)
+    group               = models.ForeignKey(Group, on_delete=models.PROTECT, null=False)
+    permission          = models.ForeignKey(Permission, on_delete=models.PROTECT, null=False)
+
+    class Meta:
+        unique_together = [
+            ['datalake', 'group', 'permission']
         ]

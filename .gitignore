@@ -10,3 +10,6 @@ server/ui/static/js-bundle/
 
 # do not check in vscode config
 .vscode/
+
+# di bit check in pycharm config
+server/.idea/
