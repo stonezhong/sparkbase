@@ -1,5 +1,1 @@
-```bash
-# in case db is not properly initialized, do
-superset db upgrade
-superset init
-```
+purpose: mordor application to deploy apache superset.
