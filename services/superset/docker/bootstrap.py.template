@@ -1,0 +1,52 @@
+#!/usr/bin/env python
+# -*- coding: UTF-8 -*-
+
+import json
+import mysql.connector
+import time
+import os
+
+def wait_for_schema(username, password, host, schema_name, retry=300, interval=1):
+    for i in range(retry):
+        try:
+            count = 0
+            cnx = mysql.connector.connect(
+                user     = username,
+                password = password,
+                host     = host,
+            )
+            cursor = cnx.cursor()
+            cursor.execute(f"SELECT COUNT(*) FROM INFORMATION_SCHEMA.SCHEMATA WHERE SCHEMA_NAME = '{schema_name}'")
+            for v, in cursor:
+                count = v
+                break
+            if count > 0:
+                return True
+            print(f"schema: {schema_name} not available yet")
+            time.sleep(interval)
+        except  mysql.connector.errors.DatabaseError:
+            print("db server not up yet")
+            time.sleep(interval)
+            continue
+    return False
+
+def main():
+    if not wait_for_schema(
+        "{{superset.mysql_user}}",
+        "{{superset.mysql_password}}",
+        "superset-sql",
+        "superset"
+    ):
+        raise Exception(f"schema: superset not found!")
+
+    # perform initialize if needed
+    state_filename = "/app/superset_home/state/.upgrade"
+    if not os.path.isfile(state_filename):
+        # if upgrade is done, this file will exist
+        os.system("superset db upgrade && superset init")
+        # with open(state_filename, "w") as f:
+        #     pass
+
+
+if __name__ == '__main__':
+    main()
