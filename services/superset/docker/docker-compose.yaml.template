@@ -2,7 +2,7 @@ version: "3.9"
 services:
   # for superset
   superset:
-    build: ./
+    build: ./superset
     hostname: superset
     container_name: superset
     depends_on:
@@ -18,7 +18,7 @@ services:
       MYSQL_USER: {{superset.mysql_user}}
       MYSQL_PASSWORD: {{superset.mysql_password}}
     volumes:
-      - "{{app_env.data_dir}}/docker/init-db/0-create-db.sql:/docker-entrypoint-initdb.d/0-create-db.sql"
+      - "{{app_env.data_dir}}/docker/superset/init-db/0-create-db.sql:/docker-entrypoint-initdb.d/0-create-db.sql"
       - "{{app_env.data_dir}}/db:/var/lib/mysql"
 
 networks:

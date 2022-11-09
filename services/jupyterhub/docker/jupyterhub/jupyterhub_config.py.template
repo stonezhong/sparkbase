@@ -1,0 +1,35 @@
+import os
+
+c.JupyterHub.db_url = "mysql+mysqlconnector://{{jupyterhub.mysql_user}}:{{jupyterhub.mysql_password}}@jupyterhub-sql/jupyterhub"
+
+c.JupyterHub.hub_ip = "0.0.0.0"
+c.JupyterHub.spawner_class = 'dockerspawner.DockerSpawner'
+
+# c.DockerSpawner.image = "jupyterhub/singleuser:2.3.0"
+c.DockerSpawner.image = "jupyterlab"
+c.DockerSpawner.network_name = '{{jupyterhub.network_name}}'
+c.DockerSpawner.volumes = {
+    "{{app_env.data_dir}}/notebooks/{username}": {
+        "bind": "/home/jovyan/work",
+        "mode": "rw"
+    }
+}
+c.DockerSpawner.notebook_dir = "/home/jovyan/work"
+
+# config gootle auth
+from oauthenticator.google import GoogleOAuthenticator
+c.JupyterHub.authenticator_class = GoogleOAuthenticator
+c.GoogleOAuthenticator.oauth_callback_url = os.path.join('{{jupyterhub.url}}', 'hub/oauth_callback')
+c.GoogleOAuthenticator.client_id = '{{google_oauth.client_id}}'
+c.GoogleOAuthenticator.client_secret = '{{google_oauth.client_secret}}'
+
+# notebook dir must be owned by user: 1000, group: 100 before mount to container
+def my_pre_spawn_hook(spawner):
+    # escaped_name is a DockerSpawner attribute
+    user_dir = f"/notebooks/{spawner.escaped_name}"
+    os.makedirs(user_dir, exist_ok=True)
+    os.chown(user_dir, 1000, 100)
+    # with open("/srv/jupyterhub/debug.log", "at") as f:
+    #     print(spawner.user, file=f)
+    # username = spawner.user.name
+c.Spawner.pre_spawn_hook = my_pre_spawn_hook
