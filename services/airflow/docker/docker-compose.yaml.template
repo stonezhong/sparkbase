@@ -1,0 +1,34 @@
+name: "airflow"
+version: "3.9"
+services:
+  # for airflow
+  airflow:
+    build: ./airflow
+    hostname: airflow
+    container_name: airflow
+    environment:
+      AIRFLOW__DATABASE__SQL_ALCHEMY_CONN: "mysql+mysqlconnector://{{airflow.mysql_user}}:{{airflow.mysql_password}}@airflow-sql/airflow"
+      AIRFLOW__WEBSERVER__BASE_URL: "{{airflow.url}}"
+      AIRFLOW__WEBSERVER__ENABLE_PROXY_FIX: "True"
+      AIRFLOW__CORE__EXECUTOR: "LocalExecutor"
+      AIRFLOW__WEBSERVER__UPDATE_FAB_PERMS: "False"
+    depends_on:
+      - airflow-sql
+    volumes:
+      - "{{app_env.data_dir}}/state:/home/airflow/state"
+  airflow-sql:
+    image: mysql:5.7.38-oracle
+    hostname: airflow-sql
+    container_name: airflow-sql
+    environment:
+      MYSQL_ROOT_PASSWORD: {{airflow.mysql_root_password}}
+      MYSQL_USER: {{airflow.mysql_user}}
+      MYSQL_PASSWORD: {{airflow.mysql_password}}
+    volumes:
+      - "{{app_env.data_dir}}/docker/airflow/init-db/0-create-db.sql:/docker-entrypoint-initdb.d/0-create-db.sql"
+      - "{{app_env.data_dir}}/docker/airflow/init-db/0-airflow.cnf:/etc/mysql/conf.d/0-airflow.cnf"
+      - "{{app_env.data_dir}}/db:/var/lib/mysql"
+networks:
+  default:
+    name: {{airflow.network_name}}
+    external: true

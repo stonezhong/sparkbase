@@ -9,4 +9,4 @@ COPY bootstrap.py ./
 # ENTRYPOINT []
 # CMD ["/bin/sleep", "36000"]
 
-CMD python3 bootstrap.py && jupyterhub
+CMD ["python3", "-u", "bootstrap.py"]

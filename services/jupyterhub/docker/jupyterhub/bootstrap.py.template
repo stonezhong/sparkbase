@@ -3,6 +3,7 @@
 
 import mysql.connector
 import time
+import subprocess
 
 def wait_for_schema(username, password, host, schema_name, retry=300, interval=1):
     for i in range(retry):
@@ -36,6 +37,9 @@ def main():
         "jupyterhub"
     ):
         raise Exception(f"schema: jupyterhub not found!")
+    print("About to wait for 5 seconds after db is detected!")
+    time.sleep(5)
+    subprocess.run(["jupyterhub"])
 
 
 if __name__ == '__main__':

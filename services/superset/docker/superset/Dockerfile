@@ -14,4 +14,4 @@ RUN mkdir /app/superset_home/state
 
 # ENTRYPOINT []
 # CMD ["/bin/sleep", "36000"]
-CMD python bootstrap.py && /usr/bin/run-server.sh
+CMD ["python", "-u", "bootstrap.py"]
