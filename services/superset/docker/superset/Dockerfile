@@ -1,6 +1,7 @@
 FROM apache/superset:7a2eb8b602bf1701aa5641f23577d45adef4e37d
 
 COPY --chown=superset:superset requirements.txt ./
+RUN pip install wheel
 RUN pip install --no-cache-dir -r requirements.txt
 
 COPY --chown=superset:superset config.py ./superset

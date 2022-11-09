@@ -1,0 +1,27 @@
+version: "3.9"
+services:
+  # for jupyterhub
+  jupyterhub:
+    build: ./jupyterhub
+    hostname: jupyterhub
+    container_name: jupyterhub
+    depends_on:
+      - jupyterhub-sql
+    volumes:
+      - "/var/run/docker.sock:/var/run/docker.sock"
+      - "{{app_env.data_dir}}/notebooks:/notebooks"
+  jupyterhub-sql:
+    image: mysql:8.0.29-oracle
+    hostname: jupyterhub-sql
+    container_name: jupyterhub-sql
+    environment:
+      MYSQL_ROOT_PASSWORD: {{jupyterhub.mysql_root_password}}
+      MYSQL_USER: {{jupyterhub.mysql_user}}
+      MYSQL_PASSWORD: {{jupyterhub.mysql_password}}
+    volumes:
+      - "{{app_env.data_dir}}/docker/jupyterhub/init-db/0-create-db.sql:/docker-entrypoint-initdb.d/0-create-db.sql"
+      - "{{app_env.data_dir}}/db:/var/lib/mysql"
+networks:
+  default:
+    external:
+      name: {{jupyterhub.network_name}}
