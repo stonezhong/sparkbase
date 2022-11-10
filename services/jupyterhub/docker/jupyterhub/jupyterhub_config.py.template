@@ -22,6 +22,9 @@ c.JupyterHub.authenticator_class = GoogleOAuthenticator
 c.GoogleOAuthenticator.oauth_callback_url = os.path.join('{{jupyterhub.url}}', 'hub/oauth_callback')
 c.GoogleOAuthenticator.client_id = '{{google_oauth.client_id}}'
 c.GoogleOAuthenticator.client_secret = '{{google_oauth.client_secret}}'
+c.GoogleOAuthenticator.allowed_users = [
+    {% for username in google_oauth.white_list -%}"{{username}}", {%- endfor %}
+]
 
 # notebook dir must be owned by user: 1000, group: 100 before mount to container
 def my_pre_spawn_hook(spawner):
