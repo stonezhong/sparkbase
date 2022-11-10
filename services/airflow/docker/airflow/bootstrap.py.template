@@ -39,6 +39,7 @@ def main():
         "airflow"
     ):
         raise Exception(f"schema: superset not found!")
+    print("About to wait for 5 seconds after db is detected!")
     time.sleep(5)
 
     # perform initialize if needed
