@@ -47,9 +47,9 @@ def main():
         os.system("superset db upgrade && superset init")
         with open(state_filename, "w") as f:
             pass
-        print("About to wait for 5 seconds after db is detected!")
-        time.sleep(5)
-        subprocess.run(["/usr/bin/run-server.sh"])
+    print("About to wait for 5 seconds after db is detected!")
+    time.sleep(5)
+    subprocess.run(["/usr/bin/run-server.sh"])
 
 
 if __name__ == '__main__':

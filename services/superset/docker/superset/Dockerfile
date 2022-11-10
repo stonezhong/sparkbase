@@ -12,6 +12,6 @@ COPY --chown=superset:superset bootstrap.py ./
 # See bootstrap.py
 RUN mkdir /app/superset_home/state
 
-# ENTRYPOINT []
+ENTRYPOINT []
 # CMD ["/bin/sleep", "36000"]
 CMD ["python", "-u", "bootstrap.py"]
