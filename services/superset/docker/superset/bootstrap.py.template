@@ -39,6 +39,9 @@ def main():
     ):
         raise Exception(f"schema: superset not found!")
 
+    print("About to wait for 5 seconds after db is detected!")
+    time.sleep(5)
+
     # perform initialize if needed
     state_filename = "/app/superset_home/state/.upgrade"
     if not os.path.isfile(state_filename):
@@ -47,8 +50,7 @@ def main():
         os.system("superset db upgrade && superset init")
         with open(state_filename, "w") as f:
             pass
-    print("About to wait for 5 seconds after db is detected!")
-    time.sleep(5)
+
     subprocess.run(["/usr/bin/run-server.sh"])
 
 
